@@ -11,7 +11,7 @@ else
 	exit 1
 fi
 
-PREREQUISITES=('apt' 'ca-certificates' 'coreutils' 'curl' 'findutils' 'gnupg' 'grep' 'lsb-release' 'software-properties-common')
+PREREQUISITES=('apt' 'ca-certificates' 'coreutils' 'curl' 'findutils' 'gawk' 'gnupg' 'grep' 'lsb-release' 'software-properties-common')
 if ! check_prerequisites "${PREREQUISITES[@]}"
 then
     echo "ERROR: Failed to comply to the prerequisites!"
