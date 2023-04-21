@@ -25,7 +25,7 @@ then
     echo "INFO: Adding docker key file"
     curl -fsSL https://download.docker.com/linux/$(lsb_release -is | awk '{print tolower($0)}')/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
-    https://download.docker.com/linux/$(lsb_release -is) $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    https://download.docker.com/linux/$(lsb_release -is | awk '{print tolower($0)}') $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     run_privileged "Running apt update" "apt-get" "update"
     run_privileged "Installing docker" "apt-get" "install" "-y" "docker-ce" "docker-ce-cli" "containerd.io" "docker-compose"
     run_privileged "Adding current user to the docker group" "usermod" "-aG" "docker" "$(whoami)"
