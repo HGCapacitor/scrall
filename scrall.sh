@@ -16,6 +16,7 @@ usage() {
 	echo -e "This script does not support long options!"
 	echo -e "Usage: $0"
 	echo -e "\t[-h]\tProvide this help"
+	echo -e "\t[-c]\tCheck list of prerequisites"
 	echo -e "\t[-e]\tExecute a specific installation script"
 	echo -e "\t[-l]\tList all available installation scripts"
 	echo -e "\t[-y]\tAnswer yes to everything"
@@ -23,8 +24,12 @@ usage() {
 
 PROGRAM_ACTION='DEFAULT'
 
-while getopts ":e:hly" opt; do
+while getopts ":c:e:hly" opt; do
 	case "$opt" in
+		c)
+			PROGRAM_ACTION='CHECK_PREREQUISITES'
+			IFS=',' read -r -a CHECK_LIST <<< ${OPTARG}
+			;;
 		e)
 			PROGRAM_ACTION='EXECUTE_SCRIPT'
 			INSTALL_SCRIPT=${OPTARG}
@@ -62,6 +67,15 @@ then
 fi
 
 case ${PROGRAM_ACTION} in
+	"CHECK_PREREQUISITES")
+		check_prerequisites "${CHECK_LIST[@]}"
+		exit 0
+		;;
+	"EXECUTE_SCRIPT")
+		COMMAND="${SCRIPTS_DIR}/${INSTALL_SCRIPT}.sh"
+		execute_script ${COMMAND}
+		exit 0
+		;;
 	"LIST_SCRIPTS")
 		if [ -d ${SCRIPTS_DIR} ];
 		then
@@ -71,11 +85,6 @@ case ${PROGRAM_ACTION} in
 			echo "ERROR: There is no directory containing the installation scripts!"
 			exit 2
 		fi
-		;;
-	"EXECUTE_SCRIPT")
-		COMMAND="${SCRIPTS_DIR}/${INSTALL_SCRIPT}.sh"
-		execute_script ${COMMAND}
-		exit 0
 		;;
 esac
 
