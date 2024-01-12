@@ -77,11 +77,21 @@ then
             ;;
         "engine")
             run_privileged "Installing docker engine" "apt-get" "install" "-y" "docker-ce" "containerd.io"
-            run_privileged "Adding current user to the docker group" "usermod" "-aG" "docker" "${USER_TO_ADD_TO_DOCKER_GROUP}"
+	    if [[ $(groups ${USER_TO_ADD_TO_DOCKER_GROUP} | grep -c docker) -eq 0 ]]
+	    then
+            	run_privileged "Adding current user to the docker group" "usermod" "-aG" "docker" "${USER_TO_ADD_TO_DOCKER_GROUP}"
+	    else
+		echo "User ${USER_TO_ADD_TO_DOCKER_GROUP} is already member of the docker group"
+	    fi
             ;;
         "both")
             run_privileged "Installing docker engine" "apt-get" "install" "-y" "docker-ce" "docker-ce-cli" "containerd.io" "docker-buildx-plugin" "docker-compose-plugin"
-            run_privileged "Adding current user to the docker group" "usermod" "-aG" "docker" "${USER_TO_ADD_TO_DOCKER_GROUP}"
+	    if [[ $(groups ${USER_TO_ADD_TO_DOCKER_GROUP} | grep -c docker) -eq 0 ]]
+	    then
+            	run_privileged "Adding current user to the docker group" "usermod" "-aG" "docker" "${USER_TO_ADD_TO_DOCKER_GROUP}"
+	    else
+		echo "User ${USER_TO_ADD_TO_DOCKER_GROUP} is already member of the docker group"
+	    fi
             ;;
         *)
 	    echo "ERROR: Unknown installation type <${INSTALL_TYPE}>"
