@@ -2,7 +2,7 @@
 #Based on https://github.com/BorisWilhelms/create-dotnet-devcert
 SCRALL_DIR=$(readlink -f $(dirname $0)/..)
 
-COMMON="${SCRALL_DIR}/scrall-common.sh"
+COMMON="${SCRALL_DIR}/common.sh"
 if [[ -f ${COMMON} ]]
 then
 	echo "INFO: Sourcing the ${COMMON} file"

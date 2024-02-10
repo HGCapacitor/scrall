@@ -3,7 +3,7 @@ USER_TO_ADD_TO_DOCKER_GROUP=$(whoami)
 INSTALL_TYPE="both"
 SCRALL_DIR=$(readlink -f $(dirname $0)/..)
 
-COMMON="${SCRALL_DIR}/scrall-common.sh"
+COMMON="${SCRALL_DIR}/common.sh"
 if [[ -f ${COMMON} ]]
 then
 	echo "INFO: Sourcing the ${COMMON} file"

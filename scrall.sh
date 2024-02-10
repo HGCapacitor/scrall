@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRALL_DIR=$(dirname $(readlink -f $0))
 
-COMMON="${SCRALL_DIR}/scrall-common.sh"
+COMMON="${SCRALL_DIR}/common.sh"
 if [[ -f ${COMMON} ]]
 then
 	echo "INFO: Sourcing the ${COMMON} file"
