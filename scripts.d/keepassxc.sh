@@ -19,9 +19,9 @@ then
 fi
 
 #Install workload
-if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "nextcloud") -eq 0 ]]
+if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "keepassxc") -eq 0 ]]
 then
-        run_privileged "Adding nextcloud-client repository" "apt-add-repository" "-y" "ppa:phoerious/keepassxc"
+        run_privileged "Adding keepassxc repository" "apt-add-repository" "-y" "ppa:phoerious/keepassxc"
         run_privileged "Running apt update" "apt-get" "update"
         run_privileged "Installing keepassxc" "apt-get" "install" "-y" "keepassxc"
 else

@@ -64,6 +64,12 @@ fi
 
 #Install workload
 
+SNAP="$(which snap)"
+if [[ -n ${SNAP} ]]
+then
+        run_privileged "Remove snap version of docker" "${SNAP}" "remove" "docker" "--purge"
+fi
+
 if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "docker") -eq 0 ]]
 then
     echo "INFO: Adding docker key file"

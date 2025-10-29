@@ -21,7 +21,7 @@ fi
 #Install workload
 if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "grub-customizer") -eq 0 ]]
 then
-        run_privileged "Adding grub-customizer repository" "apt-add-repository" "-y" "ppa:trebelnik-stefina/grub-customizer"
+        run_privileged "Adding grub-customizer repository" "apt-add-repository" "-y" "ppa:danielrichter2007/grub-customizer"
         run_privileged "Running apt update" "apt-get" "update"
         run_privileged "Installing grub-customizer" "apt-get" "install" "-y" "grub-customizer"
 else
