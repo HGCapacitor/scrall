@@ -72,16 +72,16 @@ fi
 
 if [[ $(find /etc/apt/ -name "*.sources" | xargs cat | grep -c "docker") -eq 0 ]]
 then
-    run_privileged "Installing keyring file" "curl" "-fsSL" "https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')/gpg" "-o" "/etc/apt/keyrings/docker.asc"
+    run_privileged "Installing keyring file" "curl" "-fsSL" "https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')/gpg" "-o" "/usr/share/keyrings/docker.asc"
     echo "Configuring the docker repository"
-    sudo tee /etc/apt/sources.list.d/docker.sources << EOF
-Types: deb
-URIs: https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
+    printf '%s\n' \
+        'Types: deb' \
+        "URIs: https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')" \
+        "Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")" \
+        'Components: stable' \
+        "Architecture: $(dpkg --print-architecture)" \
+        'Signed-By: /usr/share/keyrings/docker.asc' \
+        | sudo tee /etc/apt/sources.list.d/docker.sources > /dev/null
 
     run_privileged "Running apt update" "apt-get" "update"
     case "${INSTALL_TYPE}" in
