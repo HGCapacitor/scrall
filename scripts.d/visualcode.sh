@@ -19,12 +19,16 @@ then
 fi
 
 #Install workload
-if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "vscode") -eq 0 ]]
+if [[ $(find /etc/apt/ -name "*.sources" | xargs cat | grep -c "vscode") -eq 0 ]]
 then
-    echo "INFO: Adding Microsoft-VsCode key file"
-    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-vscode-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/microsoft-vscode-archive-keyring.gpg] \
-    https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+    run_privileged "Adding Microsoft-VsCode key file" "curl" "-fsSL" "https://packages.microsoft.com/keys/microsoft.asc" "-o" "/usr/share/keyrings/microsoft.asc"
+    printf '%s\n' \
+        'Types: deb' \
+        'URIs: https://packages.microsoft.com/repos/code' \
+        'Suites: stable' \
+        'Components: main' \
+        'Signed-By: /usr/share/keyrings/microsoft.asc' \
+	| sudo tee /etc/apt/sources.list.d/vscode.sources > /dev/null
     run_privileged "Running apt update" "apt-get" "update"
     run_privileged "Installing VisualCode" "apt-get" "install" "-y" "code"
 else

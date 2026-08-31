@@ -55,7 +55,7 @@ while getopts ":hi:u:" opt; do
 	esac
 done
 
-PREREQUISITES=('apt' 'ca-certificates' 'coreutils' 'curl' 'findutils' 'gawk' 'gnupg' 'grep' 'lsb-release' 'software-properties-common')
+PREREQUISITES=('apt' 'ca-certificates' 'coreutils' 'curl' 'findutils' 'gawk' 'grep' 'software-properties-common')
 if ! check_prerequisites "${PREREQUISITES[@]}"
 then
     echo "ERROR: Failed to comply to the prerequisites!"
@@ -70,12 +70,19 @@ then
         run_privileged "Remove snap version of docker" "${SNAP}" "remove" "docker" "--purge"
 fi
 
-if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "docker") -eq 0 ]]
+if [[ $(find /etc/apt/ -name "*.sources" | xargs cat | grep -c "docker") -eq 0 ]]
 then
-    echo "INFO: Adding docker key file"
-    curl -fsSL https://download.docker.com/linux/$(lsb_release -is | awk '{print tolower($0)}')/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
-    https://download.docker.com/linux/$(lsb_release -is | awk '{print tolower($0)}') $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    run_privileged "Installing keyring file" "curl" "-fsSL" "https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')/gpg" "-o" "/etc/apt/keyrings/docker.asc"
+    echo "Configuring the docker repository"
+    sudo tee /etc/apt/sources.list.d/docker.sources << EOF
+Types: deb
+URIs: https://download.docker.com/linux/$(. /etc/os-release && echo ${NAME} | awk '{print tolower($0)}')
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
     run_privileged "Running apt update" "apt-get" "update"
     case "${INSTALL_TYPE}" in
         "cli")

@@ -22,8 +22,8 @@ fi
 if [[ $(find /etc/apt/ -name "*.list" | xargs cat | grep -c "nextcloud") -eq 0 ]]
 then
         run_privileged "Adding nextcloud-client repository" "apt-add-repository" "-y" "ppa:nextcloud-devs/client"
-        run_privileged "Running apt update" "apt-get update"
-        run_privileged "Installing nextcloud-client" "apt-get install" "-y" "nextcloud-client"
+        run_privileged "Running apt update" "apt-get" "update"
+        run_privileged "Installing nextcloud-client" "apt-get install" "-y" "nextcloud-desktop"
 else
         echo "INFO: Nextcloud-client repository already setup"
 fi
